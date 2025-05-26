@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+motor
+httpx
+python-jose[cryptography]
+pydantic
+pytest
+httpx

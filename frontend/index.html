@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Simulador Monedas USD/PEN</title>
+<style>
+  body { font-family: Arial; margin: 20px; max-width: 600px; }
+  label, input, button, select { display: block; margin: 10px 0; }
+  #messages { color: green; }
+  #errors { color: red; }
+</style>
+</head>
+<body>
+
+<h1>Simulador Monedas USD/PEN</h1>
+
+<div id="register-section">
+  <h2>Crear Usuario</h2>
+  <label>Usuario:</label>
+  <input type="text" id="register-username" />
+  <button onclick="registerUser()">Crear usuario</button>
+  <div id="register-msg"></div>
+</div>
+
+<div id="login-section">
+  <h2>Login (solo usuario)</h2>
+  <label>Usuario:</label>
+  <input type="text" id="login-username" />
+  <button onclick="login()">Entrar</button>
+  <div id="login-msg"></div>
+</div>
+
+<div id="app-section" style="display:none;">
+  <h2>Bienvenido, <span id="user-name"></span></h2>
+  <button onclick="logout()">Cerrar sesión</button>
+
+  <h3>Proveedores de tasa de cambio</h3>
+  <div id="rate-providers"></div>
+<select id="select-adapter">
+  <option value="openerapublic">Open ER API (public)</option>
+  <option value="frankfurter">Frankfurter API (public)</option>
+</select>
+
+  <button onclick="changeAdapter()">Cambiar proveedor</button>
+  <div id="adapter-msg"></div>
+
+  <h3>Saldo</h3>
+  <div id="balance"></div>
+  <button onclick="refreshBalance()">Actualizar saldo</button>
+
+  <h3>Transferencia</h3>
+  <label>Usuario receptor:</label>
+  <input type="text" id="transfer-receiver" />
+  <label>Cantidad:</label>
+  <input type="number" id="transfer-amount" step="0.01" />
+  <label>Moneda:</label>
+  <select id="transfer-currency">
+    <option value="USD">USD</option>
+    <option value="PEN">PEN</option>
+  </select>
+  <button onclick="makeTransfer()">Enviar transferencia</button>
+  <div id="transfer-msg"></div>
+
+  <h3>Conversión de Monedas</h3>
+  <label>De moneda:</label>
+  <select id="convert-from-currency">
+    <option value="PEN">PEN</option>
+    <option value="USD">USD</option>
+  </select>
+  <label>A moneda:</label>
+  <select id="convert-to-currency">
+    <option value="PEN">PEN</option>
+    <option value="USD">USD</option>
+  </select>
+  <label>Cantidad:</label>
+  <input type="number" id="convert-amount" step="0.01" />
+  <button onclick="convertCurrency()">Convertir</button>
+  <div id="convert-msg"></div>
+
+  <h3>Depósitos / Retiros</h3>
+  <label>Operación:</label>
+  <select id="change-operation">
+    <option value="deposit">Depositar</option>
+    <option value="withdraw">Retirar</option>
+  </select>
+  <label>Cantidad:</label>
+  <input type="number" id="change-amount" step="0.01" />
+  <label>Moneda:</label>
+  <select id="change-currency">
+    <option value="USD">USD</option>
+    <option value="PEN">PEN</option>
+  </select>
+  <button onclick="changeBalance()">Enviar</button>
+  <div id="change-msg"></div>
+
+  <h3>Historial de transacciones</h3>
+  <button onclick="loadHistory()">Cargar historial</button>
+  <pre id="history" style="background:#f0f0f0; max-height:300px; overflow-y:auto;"></pre>
+</div>
+
+<script>
+  const API_BASE = 'http://127.0.0.1:8000';
+  let token = null;
+
+  function showMessage(id, msg, isError=false){
+    const el = document.getElementById(id);
+    el.style.color = isError ? 'red' : 'green';
+    el.textContent = msg;
+    if(!isError) setTimeout(() => { el.textContent = ''; }, 5000);
+  }
+
+  async function registerUser(){
+    const username = document.getElementById('register-username').value.trim();
+    if(!username){
+      showMessage('register-msg', 'Ingrese usuario', true);
+      return;
+    }
+    try {
+      const res = await fetch(`${API_BASE}/auth/register/`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({username})
+      });
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.detail || data.msg || 'Error al crear usuario');
+      showMessage('register-msg', data.msg);
+      document.getElementById('register-username').value = '';
+    } catch(e){
+      showMessage('register-msg', e.message, true);
+    }
+  }
+
+  async function login(){
+    const username = document.getElementById('login-username').value.trim();
+    if(!username){
+      showMessage('login-msg', 'Ingrese usuario', true);
+      return;
+    }
+    try {
+      const formData = new URLSearchParams();
+      formData.append('username', username);
+      formData.append('password', ''); // No se valida password
+
+      const res = await fetch(`${API_BASE}/auth/token/`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: formData.toString()
+      });
+      if(!res.ok){
+        const data = await res.json();
+        throw new Error(data.detail || 'Error en login');
+      }
+      const data = await res.json();
+      token = data.access_token;
+      document.getElementById('user-name').textContent = username;
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('register-section').style.display = 'none';
+      document.getElementById('app-section').style.display = 'block';
+      refreshBalance();
+      loadRates();
+      loadHistory();
+    } catch(e){
+      showMessage('login-msg', e.message, true);
+    }
+  }
+
+  function logout(){
+    token = null;
+    document.getElementById('login-section').style.display = 'block';
+    document.getElementById('register-section').style.display = 'block';
+    document.getElementById('app-section').style.display = 'none';
+    document.getElementById('login-username').value = '';
+  }
+
+  async function refreshBalance(){
+    try {
+      const res = await fetch(`${API_BASE}/users/me/balance/`, {
+        headers: {Authorization: `Bearer ${token}`}
+      });
+      if(!res.ok) throw new Error('Error al obtener saldo');
+      const data = await res.json();
+      document.getElementById('balance').textContent =
+        `PEN: ${data.balance_pen.toFixed(2)} | USD: ${data.balance_usd.toFixed(2)}`;
+    } catch(e){
+      showMessage('balance', e.message, true);
+    }
+  }
+
+  async function makeTransfer(){
+    const receiver = document.getElementById('transfer-receiver').value.trim();
+    const amount = parseFloat(document.getElementById('transfer-amount').value);
+    const currency = document.getElementById('transfer-currency').value;
+    if(!receiver || isNaN(amount) || amount <= 0){
+      showMessage('transfer-msg', 'Complete todos los campos correctamente', true);
+      return;
+    }
+    try {
+      const res = await fetch(`${API_BASE}/transfer/transfer/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({receiver, amount, currency})
+      });
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.detail || data.message || 'Error en transferencia');
+      showMessage('transfer-msg', data.message);
+      refreshBalance();
+      loadHistory();
+    } catch(e){
+      showMessage('transfer-msg', e.message, true);
+    }
+  }
+
+  async function convertCurrency(){
+    const fromCurrency = document.getElementById('convert-from-currency').value;
+    const toCurrency = document.getElementById('convert-to-currency').value;
+    const amount = parseFloat(document.getElementById('convert-amount').value);
+    if(isNaN(amount) || amount <= 0){
+      showMessage('convert-msg', 'Ingrese cantidad válida', true);
+      return;
+    }
+    try {
+      const res = await fetch(`${API_BASE}/transfer/convert/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({from_currency: fromCurrency, to_currency: toCurrency, amount})
+      });
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.detail || data.message || 'Error en conversión');
+      showMessage('convert-msg', data.message);
+      refreshBalance();
+      loadHistory();
+    } catch(e){
+      showMessage('convert-msg', e.message, true);
+    }
+  }
+
+  async function changeBalance(){
+    const operation = document.getElementById('change-operation').value;
+    const amount = parseFloat(document.getElementById('change-amount').value);
+    const currency = document.getElementById('change-currency').value;
+    if(isNaN(amount) || amount <= 0){
+      showMessage('change-msg', 'Ingrese cantidad válida', true);
+      return;
+    }
+    try {
+      const res = await fetch(`${API_BASE}/transfer/user/balance/change/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({operation, amount, currency})
+      });
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.detail || data.message || 'Error');
+      showMessage('change-msg', data.message);
+      refreshBalance();
+      loadHistory();
+    } catch(e){
+      showMessage('change-msg', e.message, true);
+    }
+  }
+
+  async function loadHistory(){
+    try {
+      const res = await fetch(`${API_BASE}/transactions/`, {
+        headers: {Authorization: `Bearer ${token}`}
+      });
+      if(!res.ok) throw new Error('Error al cargar historial');
+      const data = await res.json();
+      const pre = document.getElementById('history');
+      pre.textContent = data.map(tx => `[${new Date(tx.timestamp).toLocaleString()}] ${tx.description}`).join('\n');
+    } catch(e){
+      showMessage('history', e.message, true);
+    }
+  }
+
+  async function loadRates() {
+    try {
+      const res = await fetch(`${API_BASE}/currency/rates/?from_currency=USD&to_currency=PEN`);
+      const data = await res.json();
+      const div = document.getElementById('rate-providers');
+      div.innerHTML = "";
+      for (const [provider, rate] of Object.entries(data)) {
+        div.innerHTML += `<p><b>${provider}</b>: ${rate}</p>`;
+      }
+    } catch (e) {
+      document.getElementById('rate-providers').textContent = 'Error cargando tasas';
+    }
+  }
+
+  async function changeAdapter() {
+    const select = document.getElementById('select-adapter');
+    const key = select.value;
+    try {
+      const res = await fetch(`${API_BASE}/currency/select/`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(key)
+      });
+      const data = await res.json();
+      document.getElementById('adapter-msg').textContent = data.message;
+      loadRates();
+    } catch (e) {
+      document.getElementById('adapter-msg').textContent = 'Error cambiando adaptador';
+    }
+  }
+</script>
+
+</body>
+</html>
