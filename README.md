@@ -44,6 +44,7 @@ venv\Scripts\activate
 ```
 
 3. Instalar dependencias:
+
 Con el entorno virtual activo, instala las dependencias:
 
 ```bash
@@ -62,7 +63,8 @@ Esto levantará dos contenedores:
 - MongoDB en el puerto 27017.
 
 
-5. Crear las tablas en la base de datos
+5. Crear las tablas en la base de datos:
+
 Para crear las tablas de la base de datos, ejecuta el siguiente comando:
 
 ```bash
@@ -78,11 +80,15 @@ Cuando inicies la aplicación, se crearán automáticamente dos usuarios en la b
 - Usuario Y: `S/. 50`, `USD 100`
 
 6. Visualizar la aplicación
+
 Ingresar a la carpeta `frontend` 
+
 ```bash
 cd frontend/
 ```
+
 Abrir en el navegador el archivo `index.html`
+
 ```bash
 xdg-open index.html # Linux/maxOS
 start index.html # Windows
