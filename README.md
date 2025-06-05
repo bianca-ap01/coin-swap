@@ -77,6 +77,9 @@ Cuando inicies la aplicación, se crearán automáticamente dos usuarios en la b
 
 - Usuario Y: `S/. 50`, `USD 100`
 
+6. Visualizar la aplicación
+Ingresar a la carpeta `frontend` y abrir en el navegador el archivo `index.html`
+
 ---
 
 ## Configuración y ejecución
