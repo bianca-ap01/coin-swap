@@ -80,6 +80,10 @@ Cuando inicies la aplicación, se crearán automáticamente dos usuarios en la b
 6. Visualizar la aplicación
 Ingresar a la carpeta `frontend` y abrir en el navegador el archivo `index.html`
 
+```bash
+uvicorn app.main:app --reload
+```
+
 ---
 
 ## Configuración y ejecución
