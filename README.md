@@ -338,6 +338,10 @@ test_core_security.py
 - Capturas de pantalla como evidencia.
 - Informe y código disponible en el repositorio:
 
+![Resultados de Code Coverage - 1](results_3.png)
+
+![Resultados de Code Coverage - 2](results_4.png)
+
 🔗 [Repositorio en GitHub](https://github.com/bianca-ap01/coin-swap)
 
 🔗 [Rama: badi-flicks (Performance)](https://github.com/bianca-ap01/coin-swap/tree/badi-flicks)
