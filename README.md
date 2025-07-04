@@ -288,7 +288,7 @@ coin-swap/
 | `user.py`                  | 57     | 57        | 100%  |
 | **TOTAL servicios**        | **452**| **452**   |**100%**|
 
-![Resultados de Code Coverage](attachment:image.png)
+![Resultados de Code Coverage](results_1.png)
 
 ---
 
