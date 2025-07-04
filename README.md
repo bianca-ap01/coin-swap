@@ -299,6 +299,8 @@ coin-swap/
 | `test_core_currency_client.py`| Éxitos y errores en API; Singleton; cambio de adaptador dinámico                      |
 | `test_core_security.py`       | JWT con expiración; payload extendido; flujo `get_current_user` y errores relacionados|
 
+![test_mock_results](Screenshot 2025-07-03 235624.png)
+
 ---
 
 ## Autenticación y Seguridad
