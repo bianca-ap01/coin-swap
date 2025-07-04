@@ -340,10 +340,10 @@ test_core_security.py
 
 ![Resultados de Code Coverage - 3](results_3.png)
 
-![Resultados de Code Coverage - 4](results_4.png)
+![Resultados de Code Coverage - 4](result_4.png)
 
 🔗 [Repositorio en GitHub](https://github.com/bianca-ap01/coin-swap)
 
-🔗 [Rama: badi-flicks (Performance)](https://github.com/bianca-ap01/coin-swap/tree/badi-flicks)
+🔗 [Rama: badi-flicks (Performance) (Env, and requirements changed for 3.12 python due to deprecation)](https://github.com/bianca-ap01/coin-swap/tree/badi-flicks)
 
 
