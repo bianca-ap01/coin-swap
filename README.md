@@ -284,9 +284,7 @@ coin-swap/
 |----------------------------|--------|-----------|-------|
 | `currency_client.py`       | 185    | 185       | 100%  |
 | `security.py`              | 142    | 142       | 100%  |
-| `transaction.py`           | 68     | 68        | 100%  |
-| `user.py`                  | 57     | 57        | 100%  |
-| **TOTAL servicios**        | **452**| **452**   |**100%**|
+| **TOTAL servicios**        | **327**| **327**   |**100%**|
 
 ![Resultados de Code Coverage](results_1.png)
 
@@ -315,8 +313,6 @@ coin-swap/
 Organización por módulo:
 
 ```
-test_crud_user.py
-test_crud_transaction.py
 test_core_currency_client.py
 test_core_security.py
 ```
