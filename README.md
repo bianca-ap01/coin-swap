@@ -240,5 +240,110 @@ coin-swap/
 ├── docker-compose.yml          # Configuración de contenedores Docker
 └── README.md                   # Documentación del proyecto
 ```
+# EC4 - Pruebas Unitarias y Performance API Monedas
+
+## Grupo e Integrantes
+
+- Bianca Aguinaga  
+- Zamir Lizardo  
+- Jorge Melgarejo  
+- Ariana Mercado  
+- Matías Meneses  
+- Badi Rodríguez  
+
+---
+
+## Pruebas Unitarias
+
+- Realizadas con `PyTest` o `UnitTest`.
+- Reporte de Code Coverage: **100% en servicios** (excluye routers/controladores).
+- Pruebas enfocadas exclusivamente en **métodos o servicios**, **no en endpoints**.
+
+### Buenas prácticas
+
+- Mocks de `httpx.AsyncClient`, JWT y BD.
+- Verificación de excepciones con `pytest.raises`.
+- Asserts de interacción: `await_count`, `assert_called_once_with`.
+
+---
+
+## Stack de Test
+
+| Herramienta         | Uso                                                        |
+|---------------------|------------------------------------------------------------|
+| PyTest              | Framework de testing síncrono y asíncrono                 |
+| Coverage.py         | Medición de cobertura de líneas y ramas                   |
+| unittest.mock       | Aislamiento de dependencias (HTTP, BD, JWT, etc.)         |
+| pytest-asyncio      | Soporte para coroutines en pruebas `async`                |
+
+---
+
+## Cobertura Alcanzada
+
+| Módulo                      | Líneas | Cubiertas | %     |
+|----------------------------|--------|-----------|-------|
+| `currency_client.py`       | 185    | 185       | 100%  |
+| `security.py`              | 142    | 142       | 100%  |
+| `transaction.py`           | 68     | 68        | 100%  |
+| `user.py`                  | 57     | 57        | 100%  |
+| **TOTAL servicios**        | **452**| **452**   |**100%**|
+
+![Resultados de Code Coverage](attachment:image.png)
+
+---
+
+## Resumen de Casos por Archivo
+
+| Archivo                        | Casos clave cubiertos                                                                 |
+|-------------------------------|----------------------------------------------------------------------------------------|
+| `test_core_currency_client.py`| Éxitos y errores en API; Singleton; cambio de adaptador dinámico                      |
+| `test_core_security.py`       | JWT con expiración; payload extendido; flujo `get_current_user` y errores relacionados|
+| `test_crud_transaction.py`    | Inserción asíncrona; consulta paginada                                               |
+| `test_crud_user.py`           | Búsqueda, creación con saldos, persistencia de cambios                                |
+
+---
+
+## Autenticación y Seguridad
+
+- Pruebas para tokens JWT válidos, expirados e inválidos.
+- Control total sobre las dependencias `Depends` de FastAPI para evitar problemas de inyección.
+
+---
+
+## Estructura de Archivos de Test
+
+Organización por módulo:
+
+```
+test_crud_user.py
+test_crud_transaction.py
+test_core_currency_client.py
+test_core_security.py
+```
+
+---
+
+## Pruebas de Performance
+
+- Herramienta sugerida: **JMeter** (o similar).
+- No usar API real → usar **mock** o **modo caché** que simule un delay de **500ms**.
+
+### Escenario propuesto
+
+1. Depósito y transferencia.
+2. Transferencias de ida y vuelta entre monedas distintas.
+3. Validar que el estado final de la BD sea **consistente** (saldos coherentes).
+
+---
+
+## Entregables
+
+- Archivo `.jmx` u equivalente.
+- Capturas de pantalla como evidencia.
+- Informe y código disponible en el repositorio:
+
+🔗 [Repositorio en GitHub](https://github.com/bianca-ap01/coin-swap)
+
+🔗 [Rama: badi-flicks (Performance)](https://github.com/bianca-ap01/coin-swap/tree/badi-flicks)
 
 
