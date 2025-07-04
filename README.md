@@ -298,8 +298,6 @@ coin-swap/
 |-------------------------------|----------------------------------------------------------------------------------------|
 | `test_core_currency_client.py`| Éxitos y errores en API; Singleton; cambio de adaptador dinámico                      |
 | `test_core_security.py`       | JWT con expiración; payload extendido; flujo `get_current_user` y errores relacionados|
-| `test_crud_transaction.py`    | Inserción asíncrona; consulta paginada                                               |
-| `test_crud_user.py`           | Búsqueda, creación con saldos, persistencia de cambios                                |
 
 ---
 
