@@ -286,7 +286,9 @@ coin-swap/
 | `security.py`              | 142    | 142       | 100%  |
 | **TOTAL servicios**        | **327**| **327**   |**100%**|
 
-![Resultados de Code Coverage](results_1.png)
+![Resultados de Code Coverage - 1](results_1.png)
+
+![Resultados de Code Coverage - 2](results_2.png)
 
 ---
 
@@ -297,7 +299,6 @@ coin-swap/
 | `test_core_currency_client.py`| Éxitos y errores en API; Singleton; cambio de adaptador dinámico                      |
 | `test_core_security.py`       | JWT con expiración; payload extendido; flujo `get_current_user` y errores relacionados|
 
-![test_mock_results](Screenshot 2025-07-03 235624.png)
 
 ---
 
