@@ -272,7 +272,6 @@ coin-swap/
 | Herramienta         | Uso                                                        |
 |---------------------|------------------------------------------------------------|
 | PyTest              | Framework de testing síncrono y asíncrono                 |
-| Coverage.py         | Medición de cobertura de líneas y ramas                   |
 | unittest.mock       | Aislamiento de dependencias (HTTP, BD, JWT, etc.)         |
 | pytest-asyncio      | Soporte para coroutines en pruebas `async`                |
 
