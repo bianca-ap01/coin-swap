@@ -240,18 +240,7 @@ coin-swap/
 ├── docker-compose.yml          # Configuración de contenedores Docker
 └── README.md                   # Documentación del proyecto
 ```
-# EC4 - Pruebas Unitarias y Performance API Monedas
 
-## Grupo e Integrantes
-
-- Bianca Aguinaga  
-- Zamir Lizardo  
-- Jorge Melgarejo  
-- Ariana Mercado  
-- Matías Meneses  
-- Badi Rodríguez  
-
----
 
 ## Pruebas Unitarias
 
@@ -332,17 +321,9 @@ test_core_security.py
 
 ---
 
-## Entregables
-
-- Archivo `.jmx` u equivalente.
-- Capturas de pantalla como evidencia.
-- Informe y código disponible en el repositorio:
-
 ![Resultados de Code Coverage - 3](results_3.png)
 
 ![Resultados de Code Coverage - 4](result_4.png)
-
-🔗 [Repositorio en GitHub](https://github.com/bianca-ap01/coin-swap)
 
 🔗 [Rama: badi-flicks (Performance) (Env, and requirements changed for 3.12 python due to deprecation)](https://github.com/bianca-ap01/coin-swap/tree/badi-flicks)
 
